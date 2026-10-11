@@ -9,7 +9,8 @@
 ## Где лежит
 
 Организация GitHub **EchoSavebot**, хранилище `EchoSavebot/echosavebot.github.io` (открытое), сайт —
-**https://echosavebot.github.io/** (опубликован 10.10.2026). Настройки — Settings → Pages: ветка `main`, папка `/ (root)`.
+**https://echosave.online/** (опубликован 10.10.2026 на echosavebot.github.io, свой домен — 11.10.2026,
+куплен на Porkbun; продление около 29 $ в год). Настройки — Settings → Pages: ветка `main`, папка `/ (root)`.
 
 Чтобы обновлять из GitHub Desktop: **File → Clone repository** → `EchoSavebot/echosavebot.github.io` →
 папка `C:\git\echosavebot.github.io` (отдельно от `C:\git\echo-bot`).

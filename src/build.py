@@ -23,7 +23,9 @@ SRC = ROOT / "src"
 # The public address of the site, without a trailing slash. Used only where a full address is
 # required: link previews (og:image, og:url), canonical, hreflang, sitemap. Change it when the
 # site moves (own domain) and rebuild.
-SITE_URL = "https://echosavebot.github.io"
+SITE_URL = "https://echosave.online"
+# Own domain for GitHub Pages (file CNAME). Empty — no own domain.
+CNAME = "echosave.online"
 BOT_URL = "https://t.me/EchoSave_bot"
 SUPPORT_URL = "https://t.me/EchoSave_Support"
 PRIVACY_URL = "https://telegra.ph/Politika-konfidencialnosti--EHho-09-20"
@@ -394,6 +396,8 @@ def main() -> None:
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n", "utf-8")
     (ROOT / ".nojekyll").write_text("", "utf-8")
+    if CNAME:
+        (ROOT / "CNAME").write_text(CNAME + "\n", "utf-8")
     print("built:", ", ".join(ready_langs()))
 
 
