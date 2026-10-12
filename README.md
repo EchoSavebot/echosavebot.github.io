@@ -15,6 +15,16 @@
 Чтобы обновлять из GitHub Desktop: **File → Clone repository** → `EchoSavebot/echosavebot.github.io` →
 папка `C:\git\echosavebot.github.io` (отдельно от `C:\git\echo-bot`).
 
+## Счётчик посещений (Umami, без cookies)
+
+1. Зарегистрируйтесь на https://cloud.umami.is (бесплатный тариф Hobby).
+2. **Settings → Websites → Add website**: Name — `Эхо`, Domain — `echosave.online` → Save.
+3. Откройте сайт в списке → **Edit** → скопируйте **Website ID** (строка вида `xxxxxxxx-xxxx-…`) и пришлите Claude.
+4. Claude впишет его в `UMAMI_ID` (вверху `src/build.py`) и пересоберёт сайт; строка внизу сайта сама сменится на
+   «Сайт считает посещения через Umami — без cookies и без личных данных».
+
+Кнопки «Открыть бота» считаются как событие `open-bot` с местом (`header`, `hero`, `connect`, `final`).
+
 ## Свой домен
 
 1. Купите домен (например, на Porkbun или Namecheap). Слово «Telegram» в названии брать нельзя.

@@ -30,6 +30,10 @@ BOT_URL = "https://t.me/EchoSave_bot"
 SUPPORT_URL = "https://t.me/EchoSave_Support"
 PRIVACY_URL = "https://telegra.ph/Politika-konfidencialnosti--EHho-09-20"
 TERMS_URL = "https://telegra.ph/Pravila-ispolzovaniya-bota-EHho-09-20"
+# Visit counter Umami (cloud.umami.is), no cookies — owner's decision 12.10.2026 (RULES, «Сайт»).
+# Website ID from Umami → Settings → Websites. Empty — no counter, the footer says so.
+UMAMI_ID = "dd294d60-2943-4dc7-b218-6d5c803ca0c1"
+UMAMI_SRC = "https://cloud.umami.is/script.js"
 DEFAULT_LANG = "ru"
 # code, label in the switcher, ready (published). Not ready = shown greyed with "скоро".
 LANGS = [
@@ -62,6 +66,18 @@ def lang_switch(current: str, prefix: str) -> str:
     return "".join(items)
 
 
+def counter_tag() -> str:
+    """Umami: counts visits without cookies (RULES, «Сайт (лендинг)»). Empty id — no counter."""
+    if not UMAMI_ID:
+        return ""
+    return f'\n<script defer src="{UMAMI_SRC}" data-website-id="{UMAMI_ID}"></script>'
+
+
+def bot_link(cls: str, text: str, place: str) -> str:
+    """A button to the bot. data-umami-event counts the click (no personal data)."""
+    return f'<a class="{cls}" href="{BOT_URL}" data-umami-event="open-bot" data-umami-event-place="{place}">{text}</a>'
+
+
 def head(t: dict, *, path: str, prefix: str, og: str) -> str:
     url = f"{SITE_URL}/{path}"
     alternates = "".join(
@@ -88,20 +104,25 @@ def head(t: dict, *, path: str, prefix: str, og: str) -> str:
 <link rel="icon" type="image/png" sizes="32x32" href="{prefix}assets/favicon-32.png">
 <link rel="apple-touch-icon" href="{prefix}assets/apple-touch-icon.png">
 <link rel="stylesheet" href="{prefix}assets/style.css">
+<script>document.documentElement.classList.add("js")</script>
+<script defer src="{prefix}assets/site.js"></script>{counter_tag()}
 </head>"""
 
 
 def header(t: dict, prefix: str, lang: str) -> str:
+    nav = "".join(f'<a href="#{a}">{esc(label)}</a>' for a, label in t["nav"])
     return f"""<header class="top">
   <div class="wrap top-in">
     <a class="logo" href="./"><img src="{prefix}assets/logo-64.png" width="32" height="32" alt=""><span>{esc(t['brand'])}</span></a>
+    <nav class="menu">{nav}</nav>
     <nav class="langs" aria-label="{esc(t['lang_label'])}">{lang_switch(lang, prefix)}</nav>
-    <a class="btn btn-sm" href="{BOT_URL}">{esc(t['open_bot'])}</a>
+    {bot_link("btn btn-sm", esc(t['open_bot']), "header")}
   </div>
 </header>"""
 
 
 def footer(t: dict) -> str:
+    note = t["footer_note"] if UMAMI_ID else t["footer_note_nocount"]
     return f"""<footer class="foot">
   <div class="wrap">
     <nav class="foot-links">
@@ -109,30 +130,92 @@ def footer(t: dict) -> str:
       <a href="{PRIVACY_URL}">{esc(t['footer_privacy'])}</a>
       <a href="{TERMS_URL}">{esc(t['footer_terms'])}</a>
     </nav>
-    <p class="muted small">{esc(t['footer_note'])}</p>
+    <p class="muted small">{esc(note)}</p>
   </div>
 </footer>"""
+
+
+WAVE = ('<svg class="wave" width="110" height="22" viewBox="0 0 110 22" fill="currentColor">'
+        + "".join(f'<rect x="{i * 5.5:.1f}" y="{(22 - h) / 2}" width="3" height="{h}" rx="1.5"/>'
+                  for i, h in enumerate([6, 12, 18, 10, 14, 20, 8, 16, 12, 6, 14, 18, 10, 8, 12, 16, 6, 10, 14, 8]))
+        + "</svg>")
+
+
+def phone(t: dict, prefix: str) -> str:
+    """The hero phone. Without JavaScript (or with reduced motion) it shows the chat with the bot:
+    the notice, a voice note and its transcript. site.js plays it as a story: Алина writes,
+    deletes, the notice comes, a voice note gets its transcript — then again."""
+    notice = (f'<div class="bubble" data-s="notice"><b>🗑 {esc(t["mock_title"])}</b><br>{esc(t["mock_who"])}<br>'
+              f'{esc(t["mock_time"])}<blockquote>{esc(t["mock_quote"])}</blockquote><i>{esc(t["mock_sign"])}</i></div>')
+    return f"""<div class="phone" aria-hidden="true">
+      <div class="phone-bar">
+        <div class="pb pb-bot"><img src="{prefix}assets/logo-64.png" width="34" height="34" alt=""><div><b>{esc(t['mock_bot'])}</b><span>bot</span></div></div>
+        <div class="pb pb-chat"><span class="ava">{esc(t['story_chat'][0])}</span><div><b>{esc(t['story_chat'])}</b><span>{esc(t['story_status'])}</span></div></div>
+      </div>
+      <div class="screens">
+        <div class="msgs scr-bot">
+          {notice}
+          <div class="bubble out" data-s="voice2"><div class="voice"><span class="play">▶</span>{WAVE}<span class="small">{esc(t['mock_voice_label'])}</span></div></div>
+          <div class="bubble out" data-s="tr2">{t['mock_voice_text']}</div>
+        </div>
+        <div class="msgs scr-chat">
+          <div class="bubble" data-s="msg">{esc(t['story_msg'])}<span class="gone">{esc(t['story_deleted'])}</span></div>
+          <div class="bubble" data-s="voice"><div class="voice"><span class="play">▶</span>{WAVE}<span class="small">{esc(t['mock_voice_label'])}</span></div></div>
+          <div class="bubble out" data-s="tr">{t['story_voice_text']}</div>
+        </div>
+      </div>
+    </div>"""
+
+
+def connect(t: dict, prefix: str) -> str:
+    steps = t["steps"] + [t["step_extra"]]
+    items = []
+    for i, s in enumerate(steps, 1):
+        extra = i > len(t["steps"])
+        num = "＋" if extra else str(i)
+        items.append(
+            f'<li class="step{" step-extra" if extra else ""}" data-shot="{i - 1}"><span class="num">{num}</span>'
+            f'<div><b>{esc(s["title"])}</b><span>{esc(s["text"])}</span></div></li>')
+    shots = "".join(
+        f'<img class="shot{" on" if i == 0 else ""}" src="{prefix}assets/{s["img"]}" width="450" height="975" '
+        f'alt="{esc(t["shot_alt"].format(n=i + 1))}" loading="lazy">' for i, s in enumerate(steps))
+    return f"""<section class="sec" id="connect">
+  <div class="wrap">
+    <div class="connect">
+      <div class="connect-text">
+        <div class="connect-head">
+          <img src="{prefix}assets/logo-128.png" width="64" height="64" alt="">
+          <div><h2>{esc(t['connect_title'])}</h2><p>{esc(t['connect_sub'])}</p></div>
+        </div>
+        <ol class="steps">{"".join(items)}</ol>
+        <p class="connect-done">{esc(t['connect_done'])}</p>
+        <p class="connect-note">{esc(t['connect_note'])}</p>
+        {bot_link("btn btn-light", esc(t['hero_cta']), "connect")}
+      </div>
+      <div class="connect-phone"><div class="shots">{shots}</div></div>
+    </div>
+  </div>
+</section>"""
 
 
 def page(t: dict) -> str:
     lang = t["lang"]
     prefix = "../"
     badges = "".join(f"<li>{esc(b)}</li>" for b in t["hero_badges"])
+    facts = "".join(f'<div class="fact"><b>{esc(a)}</b><span>{esc(b)}</span></div>' for a, b in t["facts"])
     features = "".join(
-        f'<article class="card"><div class="ico">{f["icon"]}</div><h3>{esc(f["title"])}</h3>'
+        f'<article class="card reveal"><div class="ico">{f["icon"]}</div><h3>{esc(f["title"])}</h3>'
         f'<p>{esc(f["text"])}</p></article>' for f in t["features"])
-    steps = "".join(
-        f'<li class="step"><span class="num">{i}</span><div><b>{esc(s["title"])}</b>'
-        f'<span>{esc(s["text"])}</span></div></li>' for i, s in enumerate(t["steps"], 1))
     privacy = "".join(
-        f'<div class="pv"><div class="ico">{p["icon"]}</div><div><b>{esc(p["title"])}</b>'
+        f'<div class="pv reveal"><div class="ico">{p["icon"]}</div><div><b>{esc(p["title"])}</b>'
         f'<p>{esc(p["text"])}</p></div></div>' for p in t["privacy"])
     plans = "".join(
-        '<article class="card plan"><h3><span class="ico-s">' + p["icon"] + "</span>" + esc(p["title"]) + "</h3>"
+        '<article class="card plan reveal"><h3><span class="ico-s">' + p["icon"] + "</span>" + esc(p["title"]) + "</h3>"
         + "".join(f'<div class="row"><span>{esc(a)}</span><b>{esc(b)}</b></div>' for a, b in p["rows"])
         + f'<p class="muted small">{esc(p["note"])}</p></article>' for p in t["plans"])
     faq = "".join(
         f'<details><summary>{esc(q["q"])}</summary><p>{q["a"]}</p></details>' for q in t["faq"])
+    guide = "".join(f"<p>{esc(p)}</p>" for p in t["guide"])
     privacy_links = t["privacy_links"].format(privacy_url=PRIVACY_URL, terms_url=TERMS_URL)
     return f"""{head(t, path=f"{lang}/", prefix=prefix, og=f"og-{lang}.png")}
 <body>
@@ -144,52 +227,31 @@ def page(t: dict) -> str:
       <h1>{t['hero_title']}</h1>
       <p class="lead">{esc(t['hero_text'])}</p>
       <div class="cta">
-        <a class="btn" href="{BOT_URL}">{esc(t['hero_cta'])}</a>
+        {bot_link("btn", esc(t['hero_cta']), "hero")}
         <a class="btn btn-ghost" href="#connect">{esc(t['hero_how'])}</a>
       </div>
       <ul class="badges">{badges}</ul>
     </div>
-    <div class="phone" aria-hidden="true">
-      <div class="phone-bar"><img src="{prefix}assets/logo-64.png" width="34" height="34" alt=""><div><b>{esc(t['mock_bot'])}</b><span>bot</span></div></div>
-      <div class="msgs">
-        <div class="bubble">
-          <b>🗑 {esc(t['mock_title'])}</b><br>{esc(t['mock_who'])}<br>{esc(t['mock_time'])}
-          <blockquote>{esc(t['mock_quote'])}</blockquote>
-          <i>{esc(t['mock_sign'])}</i>
-        </div>
-        <div class="bubble out">
-          <div class="voice"><span class="play">▶</span><svg class="wave" width="110" height="22" viewBox="0 0 110 22" fill="currentColor"><rect x="0.0" y="8.0" width="3" height="6" rx="1.5"/><rect x="5.5" y="5.0" width="3" height="12" rx="1.5"/><rect x="11.0" y="2.0" width="3" height="18" rx="1.5"/><rect x="16.5" y="6.0" width="3" height="10" rx="1.5"/><rect x="22.0" y="4.0" width="3" height="14" rx="1.5"/><rect x="27.5" y="1.0" width="3" height="20" rx="1.5"/><rect x="33.0" y="7.0" width="3" height="8" rx="1.5"/><rect x="38.5" y="3.0" width="3" height="16" rx="1.5"/><rect x="44.0" y="5.0" width="3" height="12" rx="1.5"/><rect x="49.5" y="8.0" width="3" height="6" rx="1.5"/><rect x="55.0" y="4.0" width="3" height="14" rx="1.5"/><rect x="60.5" y="2.0" width="3" height="18" rx="1.5"/><rect x="66.0" y="6.0" width="3" height="10" rx="1.5"/><rect x="71.5" y="7.0" width="3" height="8" rx="1.5"/><rect x="77.0" y="5.0" width="3" height="12" rx="1.5"/><rect x="82.5" y="3.0" width="3" height="16" rx="1.5"/><rect x="88.0" y="8.0" width="3" height="6" rx="1.5"/><rect x="93.5" y="6.0" width="3" height="10" rx="1.5"/><rect x="99.0" y="4.0" width="3" height="14" rx="1.5"/><rect x="104.5" y="7.0" width="3" height="8" rx="1.5"/></svg><span class="small">{esc(t['mock_voice_label'])}</span></div>
-        </div>
-        <div class="bubble out">{t['mock_voice_text']}</div>
-      </div>
-    </div>
+    {phone(t, prefix)}
   </div>
 </section>
 
-<section class="sec">
+<section class="facts-sec">
+  <div class="wrap"><div class="facts reveal">{facts}</div></div>
+</section>
+
+<section class="sec" id="features">
   <div class="wrap">
-    <h2>{esc(t['features_title'])}</h2>
+    <h2 class="reveal">{esc(t['features_title'])}</h2>
     <div class="grid3">{features}</div>
   </div>
 </section>
 
-<section class="sec" id="connect">
-  <div class="wrap">
-    <div class="connect">
-      <div class="connect-head">
-        <img src="{prefix}assets/logo-128.png" width="64" height="64" alt="">
-        <div><h2>{esc(t['connect_title'])}</h2><p>{esc(t['connect_sub'])}</p></div>
-      </div>
-      <ol class="steps">{steps}</ol>
-      <p class="connect-done">{esc(t['connect_done'])}</p>
-      <a class="btn btn-light" href="{BOT_URL}">{esc(t['hero_cta'])}</a>
-    </div>
-  </div>
-</section>
+{connect(t, prefix)}
 
 <section class="sec">
   <div class="wrap">
-    <h2>{esc(t['privacy_title'])}</h2>
+    <h2 class="reveal">{esc(t['privacy_title'])}</h2>
     <div class="grid2">{privacy}</div>
     <p class="muted">{privacy_links}</p>
   </div>
@@ -197,23 +259,32 @@ def page(t: dict) -> str:
 
 <section class="sec" id="prices">
   <div class="wrap">
-    <h2>{esc(t['prices_title'])}</h2>
-    <div class="trial"><b>{esc(t['trial_title'])}</b><p>{esc(t['trial_text'])}</p></div>
+    <h2 class="reveal">{esc(t['prices_title'])}</h2>
+    <div class="trial reveal"><b>{esc(t['trial_title'])}</b><p>{esc(t['trial_text'])}</p></div>
     <div class="grid3">{plans}</div>
     <p class="muted">{esc(t['prices_note'])}</p>
   </div>
 </section>
 
 <section class="sec">
+  <div class="wrap narrow guide reveal">
+    <h2>{esc(t['guide_title'])}</h2>
+    {guide}
+    <h3>{esc(t['guide_edit_title'])}</h3>
+    <p>{esc(t['guide_edit'])}</p>
+  </div>
+</section>
+
+<section class="sec" id="faq">
   <div class="wrap narrow">
-    <h2>{esc(t['faq_title'])}</h2>
+    <h2 class="reveal">{esc(t['faq_title'])}</h2>
     <div class="faq">{faq}</div>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <div class="world">
+    <div class="world reveal">
       <h2>{esc(t['world_title'])}</h2>
       <p>{esc(t['world_text'])}</p>
       <p class="muted" lang="en">{esc(t['world_en'])}</p>
@@ -223,10 +294,10 @@ def page(t: dict) -> str:
 </section>
 
 <section class="sec final">
-  <div class="wrap">
+  <div class="wrap reveal">
     <h2>{esc(t['final_title'])}</h2>
     <p>{esc(t['final_text'])}</p>
-    <a class="btn" href="{BOT_URL}">{esc(t['hero_cta'])}</a>
+    {bot_link("btn", esc(t['hero_cta']), "final")}
   </div>
 </section>
 </main>
@@ -377,11 +448,21 @@ def icons(assets: Path) -> None:
     av.resize((180, 180), Image.LANCZOS).save(assets / "apple-touch-icon.png", optimize=True)
 
 
+def screenshots(assets: Path) -> None:
+    """Connection screenshots from the bot (bot/assets/connect/iphone, personal data painted over)."""
+    for i in range(1, 5):
+        src = SRC / "img" / "connect" / f"0{i}.jpg"
+        im = Image.open(src).convert("RGB")
+        im.resize((450, round(im.height * 450 / im.width)), Image.LANCZOS).save(
+            assets / f"connect-{i}.jpg", quality=82, optimize=True, progressive=True)
+
+
 def main() -> None:
     texts = {p.stem: json.loads(p.read_text("utf-8")) for p in (SRC / "texts").glob("*.json")}
     assets = ROOT / "assets"
     assets.mkdir(exist_ok=True)
     icons(assets)
+    screenshots(assets)
     for code in ready_langs():
         t = texts[code]
         (ROOT / code).mkdir(exist_ok=True)

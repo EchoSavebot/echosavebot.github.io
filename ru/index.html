@@ -21,13 +21,17 @@
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
 <link rel="stylesheet" href="../assets/style.css">
+<script>document.documentElement.classList.add("js")</script>
+<script defer src="../assets/site.js"></script>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="dd294d60-2943-4dc7-b218-6d5c803ca0c1"></script>
 </head>
 <body>
 <header class="top">
   <div class="wrap top-in">
     <a class="logo" href="./"><img src="../assets/logo-64.png" width="32" height="32" alt=""><span>Эхо</span></a>
+    <nav class="menu"><a href="#features">Возможности</a><a href="#connect">Подключение</a><a href="#prices">Цены</a><a href="#faq">Вопросы</a></nav>
     <nav class="langs" aria-label="Язык"><span class="lang on" aria-current="true">RU</span><span class="lang off" title="soon">EN</span><span class="lang off" title="soon">हिन्दी</span></nav>
-    <a class="btn btn-sm" href="https://t.me/EchoSave_bot">Открыть бота</a>
+    <a class="btn btn-sm" href="https://t.me/EchoSave_bot" data-umami-event="open-bot" data-umami-event-place="header">Открыть бота</a>
   </div>
 </header>
 <main>
@@ -37,76 +41,97 @@
       <h1>Узнайте, что собеседник <span class="grad">удалил</span></h1>
       <p class="lead">Эхо пришлёт, что собеседник удалил или изменил в личном чате Telegram, — с фото и файлами. Голосовые — сразу текстом.</p>
       <div class="cta">
-        <a class="btn" href="https://t.me/EchoSave_bot">Открыть @EchoSave_bot</a>
+        <a class="btn" href="https://t.me/EchoSave_bot" data-umami-event="open-bot" data-umami-event-place="hero">Открыть @EchoSave_bot</a>
         <a class="btn btn-ghost" href="#connect">Как подключить</a>
       </div>
       <ul class="badges"><li>🎁 7 дней бесплатно</li><li>Telegram Premium не нужен</li><li>Подключение — меньше минуты</li></ul>
     </div>
     <div class="phone" aria-hidden="true">
-      <div class="phone-bar"><img src="../assets/logo-64.png" width="34" height="34" alt=""><div><b>Эхо</b><span>bot</span></div></div>
-      <div class="msgs">
-        <div class="bubble">
-          <b>🗑 Сообщение удалено</b><br>👤 Алина<br>🕒 отправлено 10.10 21:47 (UTC+3)
-          <blockquote>Забудь, что я написала 🙈</blockquote>
-          <i>🐦‍🔥 Эхо · @EchoSave_bot</i>
+      <div class="phone-bar">
+        <div class="pb pb-bot"><img src="../assets/logo-64.png" width="34" height="34" alt=""><div><b>Эхо</b><span>bot</span></div></div>
+        <div class="pb pb-chat"><span class="ava">А</span><div><b>Алина</b><span>была недавно</span></div></div>
+      </div>
+      <div class="screens">
+        <div class="msgs scr-bot">
+          <div class="bubble" data-s="notice"><b>🗑 Сообщение удалено</b><br>👤 Алина<br>🕒 отправлено 10.10 21:47 (UTC+3)<blockquote>Я уже дома, не жди 🙈</blockquote><i>🐦‍🔥 Эхо · @EchoSave_bot</i></div>
+          <div class="bubble out" data-s="voice2"><div class="voice"><span class="play">▶</span><svg class="wave" width="110" height="22" viewBox="0 0 110 22" fill="currentColor"><rect x="0.0" y="8.0" width="3" height="6" rx="1.5"/><rect x="5.5" y="5.0" width="3" height="12" rx="1.5"/><rect x="11.0" y="2.0" width="3" height="18" rx="1.5"/><rect x="16.5" y="6.0" width="3" height="10" rx="1.5"/><rect x="22.0" y="4.0" width="3" height="14" rx="1.5"/><rect x="27.5" y="1.0" width="3" height="20" rx="1.5"/><rect x="33.0" y="7.0" width="3" height="8" rx="1.5"/><rect x="38.5" y="3.0" width="3" height="16" rx="1.5"/><rect x="44.0" y="5.0" width="3" height="12" rx="1.5"/><rect x="49.5" y="8.0" width="3" height="6" rx="1.5"/><rect x="55.0" y="4.0" width="3" height="14" rx="1.5"/><rect x="60.5" y="2.0" width="3" height="18" rx="1.5"/><rect x="66.0" y="6.0" width="3" height="10" rx="1.5"/><rect x="71.5" y="7.0" width="3" height="8" rx="1.5"/><rect x="77.0" y="5.0" width="3" height="12" rx="1.5"/><rect x="82.5" y="3.0" width="3" height="16" rx="1.5"/><rect x="88.0" y="8.0" width="3" height="6" rx="1.5"/><rect x="93.5" y="6.0" width="3" height="10" rx="1.5"/><rect x="99.0" y="4.0" width="3" height="14" rx="1.5"/><rect x="104.5" y="7.0" width="3" height="8" rx="1.5"/></svg><span class="small">Голосовое · 0:14</span></div></div>
+          <div class="bubble out" data-s="tr2">🐦‍🔥 Эхо: <i>Буду через 10 минут, закажи мне кофе</i></div>
         </div>
-        <div class="bubble out">
-          <div class="voice"><span class="play">▶</span><svg class="wave" width="110" height="22" viewBox="0 0 110 22" fill="currentColor"><rect x="0.0" y="8.0" width="3" height="6" rx="1.5"/><rect x="5.5" y="5.0" width="3" height="12" rx="1.5"/><rect x="11.0" y="2.0" width="3" height="18" rx="1.5"/><rect x="16.5" y="6.0" width="3" height="10" rx="1.5"/><rect x="22.0" y="4.0" width="3" height="14" rx="1.5"/><rect x="27.5" y="1.0" width="3" height="20" rx="1.5"/><rect x="33.0" y="7.0" width="3" height="8" rx="1.5"/><rect x="38.5" y="3.0" width="3" height="16" rx="1.5"/><rect x="44.0" y="5.0" width="3" height="12" rx="1.5"/><rect x="49.5" y="8.0" width="3" height="6" rx="1.5"/><rect x="55.0" y="4.0" width="3" height="14" rx="1.5"/><rect x="60.5" y="2.0" width="3" height="18" rx="1.5"/><rect x="66.0" y="6.0" width="3" height="10" rx="1.5"/><rect x="71.5" y="7.0" width="3" height="8" rx="1.5"/><rect x="77.0" y="5.0" width="3" height="12" rx="1.5"/><rect x="82.5" y="3.0" width="3" height="16" rx="1.5"/><rect x="88.0" y="8.0" width="3" height="6" rx="1.5"/><rect x="93.5" y="6.0" width="3" height="10" rx="1.5"/><rect x="99.0" y="4.0" width="3" height="14" rx="1.5"/><rect x="104.5" y="7.0" width="3" height="8" rx="1.5"/></svg><span class="small">Голосовое · 0:14</span></div>
+        <div class="msgs scr-chat">
+          <div class="bubble" data-s="msg">Я уже дома, не жди 🙈<span class="gone">сообщение удалено</span></div>
+          <div class="bubble" data-s="voice"><div class="voice"><span class="play">▶</span><svg class="wave" width="110" height="22" viewBox="0 0 110 22" fill="currentColor"><rect x="0.0" y="8.0" width="3" height="6" rx="1.5"/><rect x="5.5" y="5.0" width="3" height="12" rx="1.5"/><rect x="11.0" y="2.0" width="3" height="18" rx="1.5"/><rect x="16.5" y="6.0" width="3" height="10" rx="1.5"/><rect x="22.0" y="4.0" width="3" height="14" rx="1.5"/><rect x="27.5" y="1.0" width="3" height="20" rx="1.5"/><rect x="33.0" y="7.0" width="3" height="8" rx="1.5"/><rect x="38.5" y="3.0" width="3" height="16" rx="1.5"/><rect x="44.0" y="5.0" width="3" height="12" rx="1.5"/><rect x="49.5" y="8.0" width="3" height="6" rx="1.5"/><rect x="55.0" y="4.0" width="3" height="14" rx="1.5"/><rect x="60.5" y="2.0" width="3" height="18" rx="1.5"/><rect x="66.0" y="6.0" width="3" height="10" rx="1.5"/><rect x="71.5" y="7.0" width="3" height="8" rx="1.5"/><rect x="77.0" y="5.0" width="3" height="12" rx="1.5"/><rect x="82.5" y="3.0" width="3" height="16" rx="1.5"/><rect x="88.0" y="8.0" width="3" height="6" rx="1.5"/><rect x="93.5" y="6.0" width="3" height="10" rx="1.5"/><rect x="99.0" y="4.0" width="3" height="14" rx="1.5"/><rect x="104.5" y="7.0" width="3" height="8" rx="1.5"/></svg><span class="small">Голосовое · 0:14</span></div></div>
+          <div class="bubble out" data-s="tr">🐦‍🔥 Эхо: <i>Буду через 10 минут, закажи мне кофе</i></div>
         </div>
-        <div class="bubble out">🐦‍🔥 Эхо: <i>Буду через 10 минут, закажи мне кофе</i></div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="sec">
+<section class="facts-sec">
+  <div class="wrap"><div class="facts reveal"><div class="fact"><b>7 дней</b><span>бесплатно для новых</span></div><div class="fact"><b>48 часов</b><span>хранение, потом удаляется</span></div><div class="fact"><b>AES-256</b><span>шифрование данных</span></div><div class="fact"><b>Без Premium</b><span>подходит любой аккаунт</span></div></div></div>
+</section>
+
+<section class="sec" id="features">
   <div class="wrap">
-    <h2>Что умеет</h2>
-    <div class="grid3"><article class="card"><div class="ico">🗑</div><h3>Удалённые и изменённые</h3><p>Собеседник удалил или исправил сообщение — бот пришлёт, что там было: текст, фото, видео, голосовые и файлы. Удалили сразу много — придёт одна сводка.</p></article><article class="card"><div class="ico">🎙</div><h3>Голосовые текстом</h3><p>Расшифровка появляется прямо в переписке — её видит и собеседник. Или только вам: Меню → 🎙 Голосовые. Речь распознаётся на нашем сервере, не в сторонних сервисах.</p></article><article class="card"><div class="ico">📸</div><h3>«Один просмотр»</h3><p>Ответьте свайпом на фото или видео «один просмотр» до открытия — копия придёт в чат с ботом. Так же — файлы под спойлером и из чатов с запретом пересылки. Ваш ответ увидит собеседник.</p></article></div>
+    <h2 class="reveal">Что умеет</h2>
+    <div class="grid3"><article class="card reveal"><div class="ico">🗑</div><h3>Удалённые и изменённые</h3><p>Собеседник удалил сообщение — бот пришлёт, что там было: текст, фото, видео, голосовые и файлы. Исправил — пришлёт «Было» и «Стало». Удалили сразу много — придёт одна сводка.</p></article><article class="card reveal"><div class="ico">🎙</div><h3>Голосовые текстом</h3><p>Расшифровка появляется прямо в переписке — её видит и собеседник. Или только вам: Меню → 🎙 Голосовые. Речь распознаётся на нашем сервере, не в сторонних сервисах.</p></article><article class="card reveal"><div class="ico">📸</div><h3>«Один просмотр»</h3><p>Ответьте свайпом на фото или видео «один просмотр» до открытия — копия придёт в чат с ботом. Так же — файлы под спойлером и из чатов с запретом пересылки. Ваш ответ увидит собеседник.</p></article></div>
   </div>
 </section>
 
 <section class="sec" id="connect">
   <div class="wrap">
     <div class="connect">
-      <div class="connect-head">
-        <img src="../assets/logo-128.png" width="64" height="64" alt="">
-        <div><h2>Подключение за 3 шага</h2><p>займёт меньше минуты</p></div>
+      <div class="connect-text">
+        <div class="connect-head">
+          <img src="../assets/logo-128.png" width="64" height="64" alt="">
+          <div><h2>Подключение за 3 шага</h2><p>займёт меньше минуты</p></div>
+        </div>
+        <ol class="steps"><li class="step" data-shot="0"><span class="num">1</span><div><b>Откройте Настройки → «Изм.»</b><span>кнопка «Изм.» — вверху справа</span></div></li><li class="step" data-shot="1"><span class="num">2</span><div><b>Выберите «Автоматизация чатов»</b><span>пункт внизу списка</span></div></li><li class="step" data-shot="2"><span class="num">3</span><div><b>Впишите @EchoSave_bot</b><span>в «Чаты, доступные боту» выберите «Все личные чаты, кроме…»</span></div></li><li class="step step-extra" data-shot="3"><span class="num">＋</span><div><b>Для расшифровки в переписке</b><span>в «Разрешения для бота» включите «Ответы на сообщения». Бот сам подскажет, если это нужно.</span></div></li></ol>
+        <p class="connect-done">Получится — бот напишет «✅ Бот подключён». Начните с /start: там та же инструкция и кнопка «📲 Подключить».</p>
+        <p class="connect-note">Скриншоты — с iPhone. Если на Android не нашли «Автоматизацию чатов», напишите в @EchoSave_Support.</p>
+        <a class="btn btn-light" href="https://t.me/EchoSave_bot" data-umami-event="open-bot" data-umami-event-place="connect">Открыть @EchoSave_bot</a>
       </div>
-      <ol class="steps"><li class="step"><span class="num">1</span><div><b>Откройте Настройки → «Изм.»</b><span>кнопка «Изм.» — вверху справа</span></div></li><li class="step"><span class="num">2</span><div><b>Выберите «Автоматизация чатов»</b><span>пункт внизу списка</span></div></li><li class="step"><span class="num">3</span><div><b>Впишите @EchoSave_bot</b><span>в «Чаты, доступные боту» выберите «Все личные чаты, кроме…»</span></div></li></ol>
-      <p class="connect-done">Получится — бот напишет «✅ Бот подключён». Начните с /start: там та же инструкция и кнопка «📲 Подключить».</p>
-      <a class="btn btn-light" href="https://t.me/EchoSave_bot">Открыть @EchoSave_bot</a>
+      <div class="connect-phone"><div class="shots"><img class="shot on" src="../assets/connect-1.jpg" width="450" height="975" alt="Скриншот настроек Telegram, шаг 1" loading="lazy"><img class="shot" src="../assets/connect-2.jpg" width="450" height="975" alt="Скриншот настроек Telegram, шаг 2" loading="lazy"><img class="shot" src="../assets/connect-3.jpg" width="450" height="975" alt="Скриншот настроек Telegram, шаг 3" loading="lazy"><img class="shot" src="../assets/connect-4.jpg" width="450" height="975" alt="Скриншот настроек Telegram, шаг 4" loading="lazy"></div></div>
     </div>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <h2>Ваши данные</h2>
-    <div class="grid2"><div class="pv"><div class="ico">⏳</div><div><b>48 часов</b><p>Сообщения и файлы удаляются сами через 48 часов после отправки. Стереть сразу — Меню → 🧹 Очистка.</p></div></div><div class="pv"><div class="ico">🔐</div><div><b>Зашифровано</b><p>Тексты, имена и файлы хранятся только в зашифрованном виде (AES-256), у каждого пользователя свой ключ.</p></div></div><div class="pv"><div class="ico">👤</div><div><b>Только вам</b><p>Уведомления получаете только вы. Функции просмотра чужой переписки в боте нет — ни для кого, включая нас.</p></div></div><div class="pv"><div class="ico">🚫</div><div><b>Что бот не видит</b><p>Группы, каналы, секретные чаты и сообщения, отправленные до подключения.</p></div></div></div>
+    <h2 class="reveal">Ваши данные</h2>
+    <div class="grid2"><div class="pv reveal"><div class="ico">⏳</div><div><b>48 часов</b><p>Сообщения и файлы удаляются сами через 48 часов после отправки. Стереть сразу — Меню → 🧹 Очистка.</p></div></div><div class="pv reveal"><div class="ico">🔐</div><div><b>Зашифровано</b><p>Тексты, имена и файлы хранятся только в зашифрованном виде (AES-256), у каждого пользователя свой ключ.</p></div></div><div class="pv reveal"><div class="ico">👤</div><div><b>Только вам</b><p>Уведомления получаете только вы. Функции просмотра чужой переписки в боте нет — ни для кого, включая нас.</p></div></div><div class="pv reveal"><div class="ico">🚫</div><div><b>Что бот не видит</b><p>Группы, каналы, секретные чаты и сообщения, отправленные до подключения.</p></div></div></div>
     <p class="muted">Подробно — в <a href="https://telegra.ph/Politika-konfidencialnosti--EHho-09-20">политике конфиденциальности</a> и <a href="https://telegra.ph/Pravila-ispolzovaniya-bota-EHho-09-20">правилах использования</a>.</p>
   </div>
 </section>
 
 <section class="sec" id="prices">
   <div class="wrap">
-    <h2>Цены</h2>
-    <div class="trial"><b>🎁 7 дней бесплатно</b><p>Для новых пользователей — всё, что умеет бот. Отсчёт с подключения, один раз на аккаунт Telegram. Карта не нужна.</p></div>
-    <div class="grid3"><article class="card plan"><h3><span class="ico-s">⭐</span>Звёзды Telegram</h3><div class="row"><span>Месяц</span><b>120 ⭐</b></div><div class="row"><span>Год</span><b>1200 ⭐</b></div><p class="muted small">Месяц продлевается сам, отменить — кнопкой в боте. Год — разовый платёж.</p></article><article class="card plan"><h3><span class="ico-s">💳</span>Карта или СБП</h3><div class="row"><span>Месяц</span><b>190 ₽</b></div><div class="row"><span>Год</span><b>1700 ₽</b></div><p class="muted small">Карта российского банка или СБП. Разовый платёж, без автопродления.</p></article><article class="card plan"><h3><span class="ico-s">🪙</span>Криптовалюта</h3><div class="row"><span>Месяц</span><b>$5</b></div><div class="row"><span>Год</span><b>$39</b></div><p class="muted small">Через @CryptoBot: USDT, TON, BTC и другие. Разовый платёж.</p></article></div>
+    <h2 class="reveal">Цены</h2>
+    <div class="trial reveal"><b>🎁 7 дней бесплатно</b><p>Для новых пользователей — всё, что умеет бот. Отсчёт с подключения, один раз на аккаунт Telegram. Карта не нужна.</p></div>
+    <div class="grid3"><article class="card plan reveal"><h3><span class="ico-s">⭐</span>Звёзды Telegram</h3><div class="row"><span>Месяц</span><b>120 ⭐</b></div><div class="row"><span>Год</span><b>1200 ⭐</b></div><p class="muted small">Месяц продлевается сам, отменить — кнопкой в боте. Год — разовый платёж.</p></article><article class="card plan reveal"><h3><span class="ico-s">💳</span>Карта или СБП</h3><div class="row"><span>Месяц</span><b>190 ₽</b></div><div class="row"><span>Год</span><b>1700 ₽</b></div><p class="muted small">Карта российского банка или СБП. Разовый платёж, без автопродления.</p></article><article class="card plan reveal"><h3><span class="ico-s">🪙</span>Криптовалюта</h3><div class="row"><span>Месяц</span><b>$5</b></div><div class="row"><span>Год</span><b>$39</b></div><p class="muted small">Через @CryptoBot: USDT, TON, BTC и другие. Разовый платёж.</p></article></div>
     <p class="muted">Без подписки бот сообщает только сам факт: «сообщение удалено» — без текста и файлов. Оплата — внутри бота.</p>
   </div>
 </section>
 
 <section class="sec">
+  <div class="wrap narrow guide reveal">
+    <h2>Как посмотреть удалённые сообщения в Telegram</h2>
+    <p>В самом Telegram удалённое сообщение не вернуть: оно исчезает у обоих собеседников. Telegram Premium удалённое тоже не показывает.</p><p>Зато в настройках Telegram есть раздел «Автоматизация чатов». Туда можно подключить бота, и он будет получать сообщения ваших личных чатов в момент, когда они приходят. Эхо подключается именно так: хранит сообщения из выбранных чатов 48 часов, и если собеседник удалит сообщение, присылает вам, что там было, — текст, фото, видео, голосовые и файлы.</p><p>Важно: бот видит только то, что пришло после подключения. Удалённое раньше не вернёт ни один бот, поэтому подключать его стоит заранее. Группы, каналы и секретные чаты ботам недоступны.</p>
+    <h3>Изменённые сообщения: было и стало</h3>
+    <p>Если собеседник исправил сообщение, Эхо пришлёт обе версии — «Было» и «Стало» — и время отправки. Сам Telegram историю правок не показывает.</p>
+  </div>
+</section>
+
+<section class="sec" id="faq">
   <div class="wrap narrow">
-    <h2>Вопросы</h2>
-    <div class="faq"><details><summary>Нужен ли Telegram Premium?</summary><p>Нет. Бот подключается через «Автоматизацию чатов» в настройках Telegram — Premium для этого не нужен.</p></details><details><summary>Узнает ли собеседник?</summary><p>Уведомления об удалённом и изменённом приходят только вам. Собеседник видит расшифровку голосового, если она в переписке (по умолчанию так) — переключить на «только мне» можно в Меню → 🎙 Голосовые. Ответ свайпом на «один просмотр» — обычное сообщение, его собеседник тоже увидит.</p></details><details><summary>Какие чаты видит бот?</summary><p>Только личные чаты, которые вы выбрали в «Автоматизации чатов». Группы, каналы и секретные чаты — нет. Сообщения, отправленные до подключения, — тоже нет.</p></details><details><summary>А если «один просмотр» уже открыт?</summary><p>Тогда копии не будет: после открытия Telegram файл не отдаёт. Отвечайте до открытия.</p></details><details><summary>Пришлёт ли то, что исчезло по таймеру автоудаления?</summary><p>Нет — таймер выбрал собеседник. Если сообщение удалили руками раньше срока, бот пришлёт его как обычно.</p></details><details><summary>Как отключить бота и стереть данные?</summary><p>Отключить — Настройки → «Изм.» → Автоматизация чатов → ✕ рядом с «Эхо». Стереть сохранённое или удалить аккаунт — Меню → 🧹 Очистка.</p></details><details><summary>Куда писать с вопросом?</summary><p>В поддержку: <a href="https://t.me/EchoSave_Support">@EchoSave_Support</a>. Там же — вопросы об оплате и возвратах.</p></details></div>
+    <h2 class="reveal">Вопросы</h2>
+    <div class="faq"><details><summary>Нужен ли Telegram Premium?</summary><p>Нет. Бот подключается через «Автоматизацию чатов» в настройках Telegram — Premium для этого не нужен.</p></details><details><summary>Узнает ли собеседник?</summary><p>Нет — Telegram не сообщает собеседнику, что вы подключили бота. Уведомления об удалённом приходят только вам. Собеседник увидит лишь то, что бот пишет в переписку от вашего имени: расшифровку голосового (её можно переключить на «только мне» в Меню → 🎙 Голосовые) и ваш ответ свайпом на «один просмотр».</p></details><details><summary>Можно ли восстановить удалённое без бота?</summary><p>Нет. Удалённое до подключения бота не вернуть никак — поэтому подключать стоит заранее.</p></details><details><summary>Видит ли Telegram Premium удалённые сообщения?</summary><p>Нет, Premium их не показывает. А для Эха Premium не нужен.</p></details><details><summary>Какие чаты видит бот?</summary><p>Только личные чаты, которые вы выбрали в «Автоматизации чатов». Группы, каналы и секретные чаты — нет. Сообщения, отправленные до подключения, — тоже нет.</p></details><details><summary>А если «один просмотр» уже открыт?</summary><p>Тогда копии не будет: после открытия Telegram файл не отдаёт. Отвечайте до открытия.</p></details><details><summary>Пришлёт ли то, что исчезло по таймеру автоудаления?</summary><p>Нет — таймер выбрал собеседник. Если сообщение удалили руками раньше срока, бот пришлёт его как обычно.</p></details><details><summary>Как отключить бота и стереть данные?</summary><p>Отключить — Настройки → «Изм.» → Автоматизация чатов → ✕ рядом с «Эхо». Стереть сохранённое или удалить аккаунт — Меню → 🧹 Очистка.</p></details><details><summary>Работает на телефоне и компьютере?</summary><p>Уведомления приходят в чат с ботом, поэтому видны везде, где вы вошли в Telegram: на телефоне и на компьютере. Подключить бота проще всего в настройках Telegram на телефоне.</p></details><details><summary>Куда писать с вопросом?</summary><p>В поддержку: <a href="https://t.me/EchoSave_Support">@EchoSave_Support</a>. Там же — вопросы об оплате и возвратах.</p></details></div>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <div class="world">
+    <div class="world reveal">
       <h2>🌍 Скоро — для Индии и других стран</h2>
       <p>Готовим версию на английском и хинди.</p>
       <p class="muted" lang="en">Coming soon for India and worldwide — in English and Hindi.</p>
@@ -116,10 +141,10 @@
 </section>
 
 <section class="sec final">
-  <div class="wrap">
+  <div class="wrap reveal">
     <h2>Попробуйте 7 дней бесплатно</h2>
     <p>Откройте бота, нажмите /start и подключите его за минуту.</p>
-    <a class="btn" href="https://t.me/EchoSave_bot">Открыть @EchoSave_bot</a>
+    <a class="btn" href="https://t.me/EchoSave_bot" data-umami-event="open-bot" data-umami-event-place="final">Открыть @EchoSave_bot</a>
   </div>
 </section>
 </main>
@@ -130,7 +155,7 @@
       <a href="https://telegra.ph/Politika-konfidencialnosti--EHho-09-20">Политика конфиденциальности</a>
       <a href="https://telegra.ph/Pravila-ispolzovaniya-bota-EHho-09-20">Правила использования</a>
     </nav>
-    <p class="muted small">Эхо — независимый проект, не связан с Telegram. Сайт не использует cookies и счётчики посещений.</p>
+    <p class="muted small">Эхо — независимый проект, не связан с Telegram. Сайт считает посещения через Umami — без cookies и без личных данных.</p>
   </div>
 </footer>
 </body>
