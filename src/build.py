@@ -28,8 +28,8 @@ SITE_URL = "https://echosave.online"
 CNAME = "echosave.online"
 BOT_URL = "https://t.me/EchoSave_bot"
 SUPPORT_URL = "https://t.me/EchoSave_Support"
-PRIVACY_URL = "https://telegra.ph/Politika-konfidencialnosti--EHho-09-20"
-TERMS_URL = "https://telegra.ph/Pravila-ispolzovaniya-bota-EHho-09-20"
+# One document since 12.10.2026: «Условия и конфиденциальность» (policy + terms, Telegraph).
+DOCS_URL = "https://telegra.ph/Politika-konfidencialnosti--EHho-09-20"
 # Visit counter Umami (cloud.umami.is), no cookies — owner's decision 12.10.2026 (RULES, «Сайт»).
 # Website ID from Umami → Settings → Websites. Empty — no counter, the footer says so.
 UMAMI_ID = "dd294d60-2943-4dc7-b218-6d5c803ca0c1"
@@ -127,8 +127,7 @@ def footer(t: dict) -> str:
   <div class="wrap">
     <nav class="foot-links">
       <a href="{SUPPORT_URL}">{esc(t['footer_support'])} · @EchoSave_Support</a>
-      <a href="{PRIVACY_URL}">{esc(t['footer_privacy'])}</a>
-      <a href="{TERMS_URL}">{esc(t['footer_terms'])}</a>
+      <a href="{DOCS_URL}">{esc(t['footer_docs'])}</a>
     </nav>
     <p class="muted small">{esc(note)}</p>
   </div>
@@ -269,7 +268,7 @@ def page(t: dict) -> str:
     faq = "".join(
         f'<details><summary>{esc(q["q"])}</summary><p>{q["a"]}</p></details>' for q in t["faq"])
     guide = "".join(f"<p>{esc(p)}</p>" for p in t["guide"])
-    privacy_links = t["privacy_links"].format(privacy_url=PRIVACY_URL, terms_url=TERMS_URL)
+    privacy_links = t["privacy_links"].format(docs_url=DOCS_URL)
     return f"""{head(t, path=f"{lang}/", prefix=prefix, og=f"og-{lang}.png")}
 <body>
 {header(t, prefix, lang)}
