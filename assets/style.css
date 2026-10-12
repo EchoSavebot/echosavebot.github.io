@@ -205,40 +205,123 @@ a.lang:hover { color: var(--accent); }
   -webkit-background-clip: text; background-clip: text; color: transparent; }
 .fact span { font-size: 14px; color: var(--muted); }
 
-/* hero phone: static (no JS) shows the chat with the bot */
-.screens { min-height: 330px; }
-.pb { display: flex; align-items: center; gap: 10px; }
-.pb-chat, .scr-chat { display: none; }
-.ava { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #ffb36b, #ff6f91);
-  color: #fff; font-weight: 800; display: grid; place-items: center; }
-.bubble .gone { display: none; }
-/* story mode (site.js) */
-.phone.story [data-s] { display: none; }
-.phone.story [data-s].show { display: block; animation: pop .45s ease-out both; }
-.phone.story[data-scene="chat"] .pb-bot, .phone.story[data-scene="chat"] .scr-bot { display: none; }
-.phone.story[data-scene="chat"] .pb-chat { display: flex; }
-.phone.story[data-scene="chat"] .scr-chat { display: flex; animation: fade .35s ease-out; }
-.phone.story[data-scene="bot"] .scr-bot { animation: fade .35s ease-out; }
-.phone.story .bubble.del { color: transparent; text-shadow: 0 0 9px rgba(120, 110, 200, .55); transition: all .5s; }
-.phone.story .bubble.del .gone { display: block; color: var(--muted); text-shadow: none; font-style: italic; font-size: 13px; }
-
-.phone.story [data-s="msg"].vanish { opacity: 0; transform: scale(.9); transition: all .5s; }
+/* hero phone: Telegram on iPhone, drawn after real screenshots (always light, like the picture of a phone) */
+.phone.tg { position: relative; max-width: 360px; width: 100%; height: 720px; justify-self: center; padding: 0;
+  border: 10px solid #1d1d22; border-radius: 52px; overflow: hidden; box-shadow: var(--shadow), 0 30px 60px rgba(40, 60, 20, .18);
+  background: linear-gradient(165deg, #cfe2ae 0%, #a8cd8c 48%, #c9e0a6 100%); color: #000;
+  font: 15px/1.32 -apple-system, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif; }
+.tg::before { content: ""; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22160%22%20height%3D%22160%22%20fill%3D%22none%22%20stroke%3D%22%235f8a3c%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M20%2030l4%208%209%201-7%206%202%209-8-5-8%205%202-9-7-6%209-1z%22/%3E%3Cpath%20d%3D%22M110%2022c-5-6-15-2-13%206%201%205%2013%2012%2013%2012s12-7%2013-12c2-8-8-12-13-6z%22/%3E%3Ccircle%20cx%3D%2262%22%20cy%3D%2280%22%20r%3D%2211%22/%3E%3Cpath%20d%3D%22M57%2078h0M67%2078h0M57%2084c3%203%207%203%2010%200%22/%3E%3Cpath%20d%3D%22M120%20100c10-6%2022%204%2014%2014%22/%3E%3Cpath%20d%3D%22M20%20110h22l-4%2018H24z%22/%3E%3Cpath%20d%3D%22M42%20114c6%200%206%208%200%208%22/%3E%3Cpath%20d%3D%22M90%20140c4-8%2012-8%2016%200%22/%3E%3Ccircle%20cx%3D%22140%22%20cy%3D%2260%22%20r%3D%224%22/%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%22150%22%20r%3D%223%22/%3E%3Cpath%20d%3D%22M75%2030l6%206M81%2030l-6%206%22/%3E%3C/svg%3E") 0 0 / 160px 160px; pointer-events: none; }
+.tg-status { position: absolute; top: 0; left: 0; right: 0; z-index: 3; display: flex; justify-content: space-between;
+  align-items: center; padding: 14px 26px 0 34px; font-size: 15px; }
+.tg-status > span { display: flex; align-items: center; gap: 5px; }
+.tg-status small { font-size: 13px; font-weight: 600; }
+.batt { background: #111; color: #fff; font-size: 11px; font-weight: 700; border-radius: 5px; padding: 1px 4px; }
+.tg-screen { position: absolute; inset: 0; display: flex; flex-direction: column; padding-top: 46px;
+  transition: transform .45s cubic-bezier(.2, .8, .2, 1), opacity .45s; }
+.tg-head { display: flex; align-items: center; gap: 8px; padding: 4px 10px 6px; position: relative; z-index: 2; }
+.tg .pill { background: rgba(240, 248, 225, .82); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  border-radius: 22px; box-shadow: 0 1px 2px rgba(0, 0, 0, .08); }
+.tg .back { padding: 8px 10px; font-size: 22px; line-height: 1; display: flex; align-items: center; gap: 4px; }
+.tg .back em { font-style: normal; font-size: 12px; background: #111; color: #fff; border-radius: 10px; padding: 2px 6px; }
+.tg .title { flex: 1; text-align: center; padding: 5px 8px; line-height: 1.15; }
+.tg .title b { display: block; font-size: 16px; }
+.tg .title small { color: #6b7a63; font-size: 12px; }
+.tg-head img, .tg .ava { width: 42px; height: 42px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .8); flex: none; }
+.tg .ava { background: linear-gradient(180deg, #6fb6ff, #3b8cf0); color: #fff; font-weight: 600; font-size: 18px;
+  display: grid; place-items: center; }
+.tg-banner { margin: 2px 10px 0; padding: 7px 10px; display: flex; align-items: center; gap: 9px; position: relative; z-index: 2;
+  background: rgba(240, 248, 225, .88); border-radius: 22px; box-shadow: 0 1px 2px rgba(0, 0, 0, .08); }
+.tg-banner img { width: 34px; height: 34px; border-radius: 50%; }
+.tg-banner div { flex: 1; line-height: 1.2; }
+.tg-banner b { display: block; font-size: 14px; }
+.tg-banner small { color: #6b7a63; font-size: 12px; }
+.tg-banner .stop { background: #3b8cf0; color: #fff; font-weight: 700; font-size: 12px; border-radius: 14px; padding: 5px 10px; }
+.tg-body { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 5px; padding: 8px 8px 6px;
+  position: relative; z-index: 1; overflow: hidden; }
+.tg-date { align-self: center; background: rgba(110, 150, 70, .55); color: #fff; font-size: 12px; font-weight: 600;
+  padding: 2px 9px; border-radius: 10px; margin-bottom: 4px; }
+.tg-b { position: relative; max-width: 84%; padding: 6px 10px 6px; border-radius: 17px; background: #fff;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .1); align-self: flex-start; word-wrap: break-word; }
+.tg-b.out { align-self: flex-end; background: #e3f8c9; }
+.tg-b.in { border-bottom-left-radius: 5px; }
+.tg-b.out { border-bottom-right-radius: 5px; }
+.tg-b .tm { float: right; margin: 6px -2px -4px 8px; font-size: 11px; color: #8a8f86; display: inline-flex; align-items: center; gap: 2px; }
+.tg-b.out .tm { color: #5aa94a; }
+.tg-b .ck { width: 15px; }
+.tg-b.note { max-width: 92%; font-size: 14px; line-height: 1.38; }
+.tg-b blockquote { margin: 6px 0; padding: 3px 8px; border-left: 3px solid #8b6ff0; background: #f1edff; border-radius: 4px 8px 8px 4px; }
+.tg-sign, .tg-b .link i { color: #000; }
+.tg-sign span, .tg-b .link { color: #2f6fd6; }
+.tg-b.voice { display: flex; align-items: center; gap: 8px; padding: 7px 10px 7px 7px; }
+.tg-b.voice .play { width: 38px; height: 38px; border-radius: 50%; background: #3b8cf0; color: #fff; display: grid; place-items: center; font-size: 14px; flex: none; }
+.tg-wave { color: #3b8cf0; display: block; }
+.tg-b.voice .len { font-size: 11px; color: #3b8cf0; }
+.tg-b.voice .tr-btn { background: #e7f1ff; color: #3b8cf0; border-radius: 8px; padding: 2px 5px; font-size: 12px; align-self: flex-start; }
+.tg-b.voice .tm { position: absolute; right: 9px; bottom: 5px; margin: 0; }
+.tg-b.reply .q { border-left: 3px solid #5aa94a; background: rgba(90, 169, 74, .13); border-radius: 4px 8px 8px 4px;
+  padding: 3px 8px; margin-bottom: 4px; line-height: 1.25; }
+.tg-b.reply .q b { display: block; color: #4b9a3c; font-size: 13px; }
+.tg-b.reply .q span { font-size: 13px; color: #4b9a3c; }
+.tg-b.reply .tx { display: block; }
+.tg-b.reply .link { margin-top: 8px; }
+.tg-b .v-new { display: none; }
+.tg-input { display: flex; align-items: center; gap: 7px; padding: 6px 10px 22px; position: relative; z-index: 2; }
+.tg-round { width: 40px; height: 40px; border-radius: 50%; background: rgba(240, 248, 225, .85); display: grid; place-items: center;
+  font-size: 17px; flex: none; box-shadow: 0 1px 2px rgba(0, 0, 0, .08); filter: grayscale(1); }
+.tg-input .field { flex: 1; background: rgba(240, 248, 225, .85); border-radius: 20px; padding: 10px 14px; color: #9aa48f;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .08); }
+.tg-input .menu-btn { background: #3b8cf0; color: #fff; font-weight: 600; border-radius: 20px; padding: 9px 13px; flex: none; }
+/* static (no JS / reduced motion): the chat with the bot with both notices */
+.tg .scr-chat { transform: translateX(100%); opacity: 0; }
+/* story (site.js) */
+.tg.story [data-s] { display: none; }
+.tg.story [data-s].show { display: block; animation: pop .4s ease-out both; }
+.tg.story .tg-b.voice.show { display: flex; }
+.tg.story[data-scene="chat"] .scr-chat { transform: none; opacity: 1; }
+.tg.story[data-scene="chat"] .scr-bot { transform: translateX(-30%); opacity: 0; }
+.tg.story [data-s="msg"].del { animation: poof .9s ease-in forwards; }
+.tg.story [data-s="edit"].edited .v-old { display: none; }
+.tg.story [data-s="edit"].edited .v-new { display: inline; }
+.tg.story [data-s="edit"].edited { animation: flash .6s ease-out; }
 @keyframes pop { from { opacity: 0; transform: translateY(10px) scale(.97); } to { opacity: 1; transform: none; } }
-@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes poof { 0% { opacity: 1; filter: none; transform: none; }
+  60% { opacity: .5; filter: blur(3px); transform: scale(1.03); } 100% { opacity: 0; filter: blur(8px); transform: scale(.9); } }
+@keyframes flash { 0% { box-shadow: 0 0 0 0 rgba(139, 111, 240, .6); } 100% { box-shadow: 0 0 0 10px rgba(139, 111, 240, 0); } }
 
-/* connect: steps + sticky phone with real screenshots */
-.connect { display: grid; grid-template-columns: 1.25fr .75fr; gap: 36px; overflow: clip; }
-.connect-phone { position: relative; z-index: 1; }
-.shots { position: sticky; top: 90px; width: min(270px, 100%); aspect-ratio: 450 / 975; margin-left: auto;
-  border-radius: 36px; border: 8px solid #fff; background: #fff; overflow: hidden;
-  box-shadow: 0 18px 40px rgba(30, 20, 120, .30); }
-.shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .45s; }
-.shot.on { opacity: 1; }
-.step { transition: transform .25s, box-shadow .25s; }
-.step.cur { transform: translateX(6px); box-shadow: 0 10px 24px rgba(40, 30, 120, .28), 0 0 0 3px rgba(255,255,255,.7); }
+/* connect: step buttons + one phone that plays the steps (site.js) */
+.connect { display: grid; grid-template-columns: 1.2fr .8fr; grid-template-areas: "text phone" "foot phone"; gap: 8px 40px;
+  align-items: start; }
+.connect-text { grid-area: text; position: relative; z-index: 1; }
+.connect-phone { grid-area: phone; position: relative; z-index: 1; align-self: center; }
+.connect-foot { grid-area: foot; position: relative; z-index: 1; }
+.steps li { list-style: none; }
+.step { width: 100%; text-align: left; border: 0; font: inherit; cursor: pointer; position: relative; overflow: hidden;
+  transition: transform .25s, box-shadow .25s, background .25s; }
+.step .st { display: block; }
+.step .st b { display: block; font-size: 17px; }
+.step .st span { color: #5b4fe0; }
+.step.cur { transform: translateX(6px); box-shadow: 0 10px 24px rgba(40, 30, 120, .28), 0 0 0 3px rgba(255, 255, 255, .75); }
+.step .bar { position: absolute; left: 0; bottom: 0; height: 3px; width: 0; background: var(--grad); }
+.step.cur .bar { animation: stepbar var(--step-ms, 4000ms) linear forwards; }
+.connect.paused .step.cur .bar { animation: none; width: 0; }
+@keyframes stepbar { to { width: 100%; } }
 .step-extra { background: rgba(255, 255, 255, .88); }
 .step-extra .num { background: #fff; color: #5b4fe0; box-shadow: inset 0 0 0 2px #b9b2ff; }
-.connect-note { font-size: 14px; opacity: .9; position: relative; z-index: 1; }
+.shots { position: relative; width: min(280px, 100%); aspect-ratio: 450 / 975; margin: 0 auto; border-radius: 38px;
+  border: 9px solid #1d1d22; background: #f2f2f7; overflow: hidden; box-shadow: 0 18px 40px rgba(30, 20, 120, .32);
+  touch-action: pan-y; }
+.shot { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity .45s; }
+.shot.on { opacity: 1; }
+.shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tap { position: absolute; width: 46px; height: 46px; margin: -23px 0 0 -23px; border-radius: 50%;
+  background: rgba(91, 79, 224, .35); border: 3px solid rgba(255, 255, 255, .95); box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
+  opacity: 0; pointer-events: none; }
+.shot.on .tap { animation: tap 1.6s ease-in-out .5s infinite; }
+@keyframes tap { 0% { opacity: 0; transform: scale(1.5); } 25% { opacity: 1; transform: scale(1); }
+  40% { transform: scale(.82); } 55% { transform: scale(1); opacity: 1; } 100% { opacity: 0; transform: scale(1.6); } }
+.connect-note { font-size: 14px; opacity: .9; }
+.caps { display: none; }
+@media (prefers-reduced-motion: reduce) { .shot.on .tap { animation: none; opacity: .9; } .step.cur .bar { animation: none; } }
 
 /* guide */
 .guide p { font-size: 17px; }
@@ -260,21 +343,47 @@ a.lang:hover { color: var(--accent); }
   .logo { margin-right: auto; }
   .facts { grid-template-columns: repeat(2, 1fr); }
   .fact b { font-size: 22px; }
-  .connect { grid-template-columns: minmax(0, 1fr); gap: 0; }
-  .connect > *, .connect-text > * { min-width: 0; }
-  .connect-text { display: contents; }
-  .connect-head { order: 0; } .steps { order: 1; } .connect-phone { order: 2; }
-  .connect-done, .connect-note { order: 3; } .connect .btn { order: 4; justify-self: start; }
-  /* phone width: screenshots become a swipeable row under the steps */
-  .connect-phone { margin: 4px 0 18px; }
-  .shots { position: static; width: auto; aspect-ratio: auto; margin: 0 -16px; padding: 4px 16px 10px;
-    border: 0; border-radius: 0; background: none; box-shadow: none; display: flex; gap: 12px;
-    overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
-  .shot { position: static; opacity: 1; flex: none; width: 168px; height: auto; border-radius: 18px;
-    scroll-snap-align: start; box-shadow: 0 8px 18px rgba(30, 20, 120, .25); }
+  .connect { grid-template-columns: minmax(0, 1fr); grid-template-areas: "text" "phone" "foot"; gap: 0; }
+  .connect-phone { margin: 6px 0 18px; }
+  .shots { width: min(250px, 78%); }
+  /* phone width: the steps become number chips, the current step's text sits above the phone */
+  .steps { display: flex; justify-content: center; gap: 10px; margin: 0 0 14px; }
+  .steps li { flex: none; }
+  .step { width: auto; padding: 4px; border-radius: 50%; background: rgba(255, 255, 255, .25); box-shadow: none; }
+  .step .st, .step .bar { display: none; }
+  .step.cur { transform: none; background: #fff; box-shadow: 0 6px 14px rgba(40, 30, 120, .25); }
+  .caps { display: block; min-height: 72px; text-align: center; margin-bottom: 12px; }
+  .cap { display: none; margin: 0; }
+  .cap.on { display: block; animation: fade .35s ease-out; }
+  .cap b { display: block; font-size: 17px; }
+  .cap span { opacity: .92; }
+  .step .st b { font-size: 16px; }
   .step.cur { transform: none; box-shadow: 0 8px 18px rgba(40, 30, 120, .18); }
   .step { align-items: flex-start; }
-  .screens { min-height: 300px; }
+  .phone.tg { height: 660px; }
 }
 
 .sec[id] { scroll-margin-top: 64px; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* guide: collapsed «Подробнее» (search engines read it, people open it if they want) */
+.guide-sec { padding-top: 8px; }
+.guide { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 0 22px; }
+.guide summary { cursor: pointer; padding: 16px 0; font-weight: 700; color: var(--accent); list-style: none; }
+.guide summary::-webkit-details-marker { display: none; }
+.guide summary::after { content: " ↓"; }
+.guide[open] summary::after { content: " ↑"; }
+.guide h2 { font-size: 24px; }
+
+/* phone width: the button to the bot is always under the thumb */
+.sticky-cta { display: none; }
+@media (max-width: 860px) {
+  body { padding-bottom: 84px; }
+  .sticky-cta { display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--line); transition: transform .3s; }
+  .sticky-cta .btn { display: block; text-align: center; padding: 13px 16px; }
+  .js .sticky-cta { transform: translateY(110%); }
+  .js .sticky-cta.on { transform: none; }
+}

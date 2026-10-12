@@ -1,62 +1,110 @@
-/* Эхо — landing: blocks appear on scroll, connection screenshots follow the steps, the hero phone
-   plays a short story. Without JavaScript or with "reduce motion" everything is simply shown. */
+/* Эхо — landing: blocks appear each time they scroll into view, the connection phone plays the
+   steps by itself, the hero phone plays the story. Without JavaScript or with "reduce motion"
+   everything is simply shown. */
 (function () {
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var hasIO = "IntersectionObserver" in window;
   var each = function (list, fn) { Array.prototype.forEach.call(list, fn); };
 
-  // 1. Blocks appear when scrolled to.
+  // 0. Phone width: the bottom button shows once the hero button is scrolled away, hides at the end.
+  var sticky = document.querySelector(".sticky-cta");
+  if (sticky) {
+    if (!hasIO) { sticky.classList.add("on"); }
+    else {
+      var heroGone = false, endSeen = false;
+      var upd = function () { sticky.classList.toggle("on", heroGone && !endSeen); };
+      var heroBtn = document.querySelector(".hero .cta"), fin = document.querySelector(".final");
+      if (heroBtn) new IntersectionObserver(function (e) { heroGone = !e[0].isIntersecting && e[0].boundingClientRect.top < 0; upd(); }).observe(heroBtn);
+      if (fin) new IntersectionObserver(function (e) { endSeen = e[0].isIntersecting; upd(); }).observe(fin);
+    }
+  }
+
+  // 1. Blocks appear every time they come into view (scrolling down and up).
   var blocks = document.querySelectorAll(".reveal");
   if (reduce || !hasIO) {
     each(blocks, function (el) { el.classList.add("in"); });
   } else {
     var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
-      });
-    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+      entries.forEach(function (e) { e.target.classList.toggle("in", e.isIntersecting); });
+    }, { threshold: 0.08 });
     each(blocks, function (el) { io.observe(el); });
   }
 
-  // 2. Connection: the phone shows the screenshot of the step in the middle of the screen.
+  // 2. Connection: one phone shows the steps one after another; buttons and swipes switch them.
+  var box = document.querySelector(".connect");
   var shots = document.querySelectorAll(".shot");
   var steps = document.querySelectorAll(".step[data-shot]");
-  function showShot(i) {
-    each(shots, function (s, k) { s.classList.toggle("on", k === i); });
-    each(steps, function (s, k) { s.classList.toggle("cur", k === i); });
+  var caps = document.querySelectorAll(".cap");
+  if (box && shots.length) {
+    var STEP_MS = 4000, cur = 0, timer = null, visible = !hasIO, holdUntil = 0;
+    box.style.setProperty("--step-ms", STEP_MS + "ms");
+    var go = function (i) {
+      cur = (i + shots.length) % shots.length;
+      each(shots, function (s, k) { s.classList.toggle("on", k === cur); });
+      each(caps, function (s, k) { s.classList.toggle("on", k === cur); });
+      each(steps, function (s, k) {
+        s.classList.remove("cur");
+        if (k === cur) { void s.offsetWidth; s.classList.add("cur"); }
+      });
+    };
+    var tick = function () {
+      clearTimeout(timer);
+      if (reduce) return;
+      timer = setTimeout(function () {
+        if (visible && Date.now() >= holdUntil) go(cur + 1);
+        tick();
+      }, STEP_MS);
+    };
+    var hold = function () { holdUntil = Date.now() + 2 * STEP_MS; box.classList.add("paused");
+      setTimeout(function () { box.classList.remove("paused"); }, 2 * STEP_MS); };
+    each(steps, function (s) {
+      s.addEventListener("click", function () { go(+s.getAttribute("data-shot")); hold(); tick(); });
+    });
+    var phoneEl = box.querySelector(".shots"), x0 = null;
+    phoneEl.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    phoneEl.addEventListener("touchend", function (e) {
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0; x0 = null;
+      if (Math.abs(dx) > 40) { go(cur + (dx < 0 ? 1 : -1)); hold(); tick(); }
+    });
+    if (hasIO) {
+      new IntersectionObserver(function (en) {
+        visible = en[0].isIntersecting;
+        if (visible) { go(cur); tick(); }
+      }, { threshold: 0.3 }).observe(box);
+    }
+    if (reduce) box.classList.add("paused");
+    tick();
   }
-  if (shots.length && hasIO) {
-    var so = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { if (e.isIntersecting) showShot(+e.target.getAttribute("data-shot")); });
-    }, { rootMargin: "-45% 0px -45% 0px" });
-    each(steps, function (s) { so.observe(s); });
-  }
-  each(steps, function (s) {
-    s.addEventListener("mouseenter", function () { showShot(+s.getAttribute("data-shot")); });
-  });
 
-  // 3. The hero phone: Алина writes and deletes, Эхо sends the notice, a voice note gets a transcript.
-  var phone = document.querySelector(".phone");
+  // 3. The hero phone: Алина writes and deletes → the notice → her voice note gets a transcript →
+  //    she edits a message → the notice with «Было» and «Стало». Then again.
+  var phone = document.querySelector(".phone.tg");
   if (!phone || reduce) return;
   phone.classList.add("story");
   var q = function (name) { return phone.querySelector('[data-s="' + name + '"]'); };
   var scene = function (name) { phone.setAttribute("data-scene", name); };
   var show = function (name) { q(name).classList.add("show"); };
+  var hide = function (name) { q(name).classList.remove("show"); };
   var plan = [
     [0, function () {
-      each(phone.querySelectorAll("[data-s]"), function (el) { el.classList.remove("show", "del", "vanish"); });
+      each(phone.querySelectorAll("[data-s]"), function (el) { el.classList.remove("show", "del", "edited"); });
       scene("chat");
     }],
     [700, function () { show("msg"); }],
     [2600, function () { q("msg").classList.add("del"); }],
-    [3700, function () { q("msg").classList.add("vanish"); }],
-    [4300, function () { scene("bot"); }],
-    [4700, function () { show("notice"); }],
-    [8200, function () { q("msg").classList.remove("show"); scene("chat"); }],
-    [8800, function () { show("voice"); }],
-    [10200, function () { show("tr"); }],
+    [3500, function () { hide("msg"); }],
+    [3900, function () { scene("bot"); }],
+    [4300, function () { show("notice"); }],
+    [7600, function () { scene("chat"); }],
+    [8200, function () { show("voice"); }],
+    [9700, function () { show("tr"); }],
+    [12300, function () { show("edit"); }],
+    [14000, function () { q("edit").classList.add("edited"); }],
+    [15400, function () { scene("bot"); }],
+    [15800, function () { show("notice2"); }],
   ];
-  var LOOP = 14500, timers = [];
+  var LOOP = 20500, timers = [];
   function run() {
     timers.forEach(clearTimeout);
     timers = plan.map(function (p) { return setTimeout(p[1], p[0]); });

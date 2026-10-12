@@ -141,58 +141,112 @@ WAVE = ('<svg class="wave" width="110" height="22" viewBox="0 0 110 22" fill="cu
         + "</svg>")
 
 
+CHECKS = ('<svg class="ck" viewBox="0 0 18 10" width="17" height="10" fill="none" stroke="currentColor" '
+          'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5.5l3 3L10 1.5"/>'
+          '<path d="M7.5 8l.5.5L14.5 1.5"/></svg>')
+SIGNAL = ('<svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/>'
+          '<rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/>'
+          '<rect x="15" y="0" width="3" height="12" rx="1" opacity=".35"/></svg>')
+TG_WAVE = ('<svg class="tg-wave" width="96" height="20" viewBox="0 0 96 20" fill="currentColor">'
+           + "".join(f'<rect x="{i * 4}" y="{(20 - h) / 2}" width="2.2" height="{h}" rx="1.1"/>'
+                     for i, h in enumerate([5, 9, 14, 8, 12, 17, 7, 13, 10, 5, 12, 16, 9, 6, 11, 15, 6, 9, 13, 7, 11, 8, 14, 6]))
+           + "</svg>")
+
+
 def phone(t: dict, prefix: str) -> str:
-    """The hero phone. Without JavaScript (or with reduced motion) it shows the chat with the bot:
-    the notice, a voice note and its transcript. site.js plays it as a story: Алина writes,
-    deletes, the notice comes, a voice note gets its transcript — then again."""
-    notice = (f'<div class="bubble" data-s="notice"><b>🗑 {esc(t["mock_title"])}</b><br>{esc(t["mock_who"])}<br>'
-              f'{esc(t["mock_time"])}<blockquote>{esc(t["mock_quote"])}</blockquote><i>{esc(t["mock_sign"])}</i></div>')
-    return f"""<div class="phone" aria-hidden="true">
-      <div class="phone-bar">
-        <div class="pb pb-bot"><img src="{prefix}assets/logo-64.png" width="34" height="34" alt=""><div><b>{esc(t['mock_bot'])}</b><span>bot</span></div></div>
-        <div class="pb pb-chat"><span class="ava">{esc(t['story_chat'][0])}</span><div><b>{esc(t['story_chat'])}</b><span>{esc(t['story_status'])}</span></div></div>
+    """The hero phone, drawn after real iPhone screenshots of Telegram (12.10.2026). Without JavaScript
+    (or with reduced motion) it shows the chat with the bot: both notices. site.js plays the story:
+    Алина writes and deletes → the notice → her voice note gets a transcript → she edits → the notice."""
+    g = t["tg"]
+    logo = f'<img src="{prefix}assets/logo-64.png" width="40" height="40" alt="">'
+    sign = f'<i class="tg-sign">🐦‍🔥 {esc(g["echo"])} · <span>@EchoSave_bot</span></i>'
+    when = f'🕒 {esc(g["sent"])} {esc(g["date"])} {{time}} ({esc(g["tz"])})'
+
+    def bubble(side: str, text: str, time: str, attrs: str = "") -> str:
+        ticks = CHECKS if side == "out" else ""
+        return (f'<div class="tg-b {side}"{attrs}><span class="tx">{text}</span>'
+                f'<span class="tm">{time}{ticks}</span></div>')
+
+    history = "".join(bubble(s, esc(x), tm) for s, x, tm in g["history"])
+    deleted = bubble("in", esc(g["deleted_text"]), g["deleted_time"], ' data-s="msg"')
+    voice = (f'<div class="tg-b in voice" data-s="voice"><span class="play">▶</span><div>{TG_WAVE}'
+             f'<span class="len">{esc(g["voice_len"])}</span></div><span class="tr-btn">→A</span>'
+             f'<span class="tm">{esc(g["voice_time"])}</span></div>')
+    reply = (f'<div class="tg-b out reply" data-s="tr"><div class="q"><b>{esc(g["name"])}</b>'
+             f'<span>🎤 {esc(g["reply_quote"])}</span></div>'
+             f'<span class="tx">🐦‍🔥 {esc(g["echo"])}: <i>{esc(g["transcript"])}</i></span>'
+             f'<span class="tx link">🐦‍🔥 <i>{esc(g["sign"])}</i></span>'
+             f'<span class="tm">{esc(g["echo"])}, {esc(g["voice_time"])}{CHECKS}</span></div>')
+    edit = (f'<div class="tg-b in" data-s="edit"><span class="tx"><span class="v-old">{esc(g["edit_old"])}</span>'
+            f'<span class="v-new">{esc(g["edit_new"])}</span></span>'
+            f'<span class="tm"><span class="v-new">{esc(g["edited"])} </span>{esc(g["edit_time"])}</span></div>')
+    n_del = (f'<div class="tg-b in note" data-s="notice"><b>🗑️ {esc(g["n_deleted"])}</b><br>👤 {esc(g["name"])}<br>'
+             f'{when.format(time=esc(g["deleted_time"]))}<blockquote>{esc(g["deleted_text"])}</blockquote>{sign}'
+             f'<span class="tm">{esc(g["deleted_time"])}</span></div>')
+    n_edit = (f'<div class="tg-b in note" data-s="notice2"><b>✏️ {esc(g["n_edited"])}</b><br>👤 {esc(g["name"])}<br>'
+              f'{when.format(time=esc(g["edit_time"]))}<br><br><b>{esc(g["was"])}</b>'
+              f'<blockquote>{esc(g["edit_old"])}</blockquote><b>{esc(g["now"])}</b>'
+              f'<blockquote>{esc(g["edit_new"])}</blockquote>{sign}<span class="tm">{esc(g["edit_time"])}</span></div>')
+    status = (f'<div class="tg-status"><b>{esc(g["clock"])}</b><span>{SIGNAL}<small>5G</small>'
+              f'<span class="batt">69</span></span></div>')
+    attach = '<span class="tg-round">📎</span>'
+    mic = '<span class="tg-round">🎙</span>'
+    return f"""<div class="phone tg" aria-hidden="true">
+      {status}
+      <div class="tg-screen scr-bot">
+        <div class="tg-head"><span class="pill back">‹ <em>3</em></span><span class="pill title"><b>{esc(g['bot'])}</b><small>{esc(g['bot_status'])}</small></span>{logo}</div>
+        <div class="tg-body">{n_del}{n_edit}</div>
+        <div class="tg-input"><span class="menu-btn">≡ {esc(g['menu'])}</span>{attach}<span class="field">{esc(g['input'])}</span>{mic}</div>
       </div>
-      <div class="screens">
-        <div class="msgs scr-bot">
-          {notice}
-          <div class="bubble out" data-s="voice2"><div class="voice"><span class="play">▶</span>{WAVE}<span class="small">{esc(t['mock_voice_label'])}</span></div></div>
-          <div class="bubble out" data-s="tr2">{t['mock_voice_text']}</div>
-        </div>
-        <div class="msgs scr-chat">
-          <div class="bubble" data-s="msg">{esc(t['story_msg'])}<span class="gone">{esc(t['story_deleted'])}</span></div>
-          <div class="bubble" data-s="voice"><div class="voice"><span class="play">▶</span>{WAVE}<span class="small">{esc(t['mock_voice_label'])}</span></div></div>
-          <div class="bubble out" data-s="tr">{t['story_voice_text']}</div>
-        </div>
+      <div class="tg-screen scr-chat">
+        <div class="tg-head"><span class="pill back">‹ <em>3</em></span><span class="pill title"><b>{esc(g['name'])}</b><small>{esc(g['status'])}</small></span><span class="ava">{esc(g['name'][0])}</span></div>
+        <div class="tg-banner">{logo}<div><b>{esc(g['bot'])}</b><small>{esc(g['banner'])}</small></div><span class="stop">{esc(g['stop'])}</span></div>
+        <div class="tg-body"><span class="tg-date">{esc(g['today'])}</span>{history}{deleted}{voice}{reply}{edit}</div>
+        <div class="tg-input">{attach}<span class="field">{esc(g['input'])}</span>{mic}</div>
       </div>
     </div>"""
 
 
+# Where to "tap" on each connection screenshot (share of width, share of height) — the orange frames.
+TAPS = [(0.885, 0.092), (0.5, 0.898), (0.5, 0.35), (0.5, 0.533)]
+
+
 def connect(t: dict, prefix: str) -> str:
+    """Connection: one phone plays the steps by itself (a finger taps the orange frame), the step
+    buttons switch it by hand; on a phone it can also be swiped. Without JavaScript: step 1."""
     steps = t["steps"] + [t["step_extra"]]
     items = []
-    for i, s in enumerate(steps, 1):
-        extra = i > len(t["steps"])
-        num = "＋" if extra else str(i)
+    for i, s in enumerate(steps):
+        extra = i >= len(t["steps"])
+        num = "＋" if extra else str(i + 1)
         items.append(
-            f'<li class="step{" step-extra" if extra else ""}" data-shot="{i - 1}"><span class="num">{num}</span>'
-            f'<div><b>{esc(s["title"])}</b><span>{esc(s["text"])}</span></div></li>')
+            f'<li><button type="button" class="step{" step-extra" if extra else ""}{" cur" if i == 0 else ""}" data-shot="{i}">'
+            f'<span class="num">{num}</span><span class="st"><b>{esc(s["title"])}</b><span>{esc(s["text"])}</span></span>'
+            f'<i class="bar"></i></button></li>')
     shots = "".join(
-        f'<img class="shot{" on" if i == 0 else ""}" src="{prefix}assets/{s["img"]}" width="450" height="975" '
-        f'alt="{esc(t["shot_alt"].format(n=i + 1))}" loading="lazy">' for i, s in enumerate(steps))
+        f'<figure class="shot{" on" if i == 0 else ""}"><img src="{prefix}assets/{s["img"]}" width="450" height="975" '
+        f'alt="{esc(t["shot_alt"].format(n=i + 1))}"{"" if i == 0 else " loading=\"lazy\""}>'
+        f'<span class="tap" style="left:{TAPS[i][0] * 100:.1f}%;top:{TAPS[i][1] * 100:.1f}%"></span></figure>'
+        for i, s in enumerate(steps))
+    caps = "".join(
+        f'<p class="cap{" on" if i == 0 else ""}"><b>{"＋" if i >= len(t["steps"]) else i + 1}. {esc(s["title"])}</b>'
+        f'<span>{esc(s["text"])}</span></p>' for i, s in enumerate(steps))
     return f"""<section class="sec" id="connect">
   <div class="wrap">
-    <div class="connect">
+    <div class="connect reveal">
       <div class="connect-text">
         <div class="connect-head">
           <img src="{prefix}assets/logo-128.png" width="64" height="64" alt="">
           <div><h2>{esc(t['connect_title'])}</h2><p>{esc(t['connect_sub'])}</p></div>
         </div>
         <ol class="steps">{"".join(items)}</ol>
+      </div>
+      <div class="connect-phone"><div class="caps">{caps}</div><div class="shots">{shots}</div></div>
+      <div class="connect-foot">
         <p class="connect-done">{esc(t['connect_done'])}</p>
         <p class="connect-note">{esc(t['connect_note'])}</p>
         {bot_link("btn btn-light", esc(t['hero_cta']), "connect")}
       </div>
-      <div class="connect-phone"><div class="shots">{shots}</div></div>
     </div>
   </div>
 </section>"""
@@ -201,7 +255,6 @@ def connect(t: dict, prefix: str) -> str:
 def page(t: dict) -> str:
     lang = t["lang"]
     prefix = "../"
-    badges = "".join(f"<li>{esc(b)}</li>" for b in t["hero_badges"])
     facts = "".join(f'<div class="fact"><b>{esc(a)}</b><span>{esc(b)}</span></div>' for a, b in t["facts"])
     features = "".join(
         f'<article class="card reveal"><div class="ico">{f["icon"]}</div><h3>{esc(f["title"])}</h3>'
@@ -230,7 +283,6 @@ def page(t: dict) -> str:
         {bot_link("btn", esc(t['hero_cta']), "hero")}
         <a class="btn btn-ghost" href="#connect">{esc(t['hero_how'])}</a>
       </div>
-      <ul class="badges">{badges}</ul>
     </div>
     {phone(t, prefix)}
   </div>
@@ -249,14 +301,6 @@ def page(t: dict) -> str:
 
 {connect(t, prefix)}
 
-<section class="sec">
-  <div class="wrap">
-    <h2 class="reveal">{esc(t['privacy_title'])}</h2>
-    <div class="grid2">{privacy}</div>
-    <p class="muted">{privacy_links}</p>
-  </div>
-</section>
-
 <section class="sec" id="prices">
   <div class="wrap">
     <h2 class="reveal">{esc(t['prices_title'])}</h2>
@@ -267,11 +311,10 @@ def page(t: dict) -> str:
 </section>
 
 <section class="sec">
-  <div class="wrap narrow guide reveal">
-    <h2>{esc(t['guide_title'])}</h2>
-    {guide}
-    <h3>{esc(t['guide_edit_title'])}</h3>
-    <p>{esc(t['guide_edit'])}</p>
+  <div class="wrap">
+    <h2 class="reveal">{esc(t['privacy_title'])}</h2>
+    <div class="grid2">{privacy}</div>
+    <p class="muted">{privacy_links}</p>
   </div>
 </section>
 
@@ -279,6 +322,18 @@ def page(t: dict) -> str:
   <div class="wrap narrow">
     <h2 class="reveal">{esc(t['faq_title'])}</h2>
     <div class="faq">{faq}</div>
+  </div>
+</section>
+
+<section class="sec guide-sec">
+  <div class="wrap narrow">
+    <details class="guide">
+      <summary>{esc(t['guide_more'])}</summary>
+      <h2>{esc(t['guide_title'])}</h2>
+      {guide}
+      <h3>{esc(t['guide_edit_title'])}</h3>
+      <p>{esc(t['guide_edit'])}</p>
+    </details>
   </div>
 </section>
 
@@ -301,6 +356,7 @@ def page(t: dict) -> str:
   </div>
 </section>
 </main>
+<div class="sticky-cta">{bot_link("btn", esc(t['sticky_cta']), "sticky")}</div>
 {footer(t)}
 </body>
 </html>
