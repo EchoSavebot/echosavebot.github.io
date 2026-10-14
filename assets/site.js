@@ -77,9 +77,50 @@
     tick();
   }
 
+  // 4. «📜 Переписка» (14.10.2026): Алина deletes the whole chat → Меню → «📜 Переписка» → her chat → the file
+  //    → the file opened. Plays only while the phone is on screen. Without JS / reduced motion: the opened file.
+  var xp = document.querySelector(".phone.xp");
+  if (xp && !reduce) {
+    xp.classList.add("xstory");
+    var xq = function (name) { return xp.querySelector('[data-x="' + name + '"]'); };
+    var xs = function (name) { xp.setAttribute("data-scene", name); };
+    var on = function (cls) { xp.classList.add(cls); }, off = function (cls) { xp.classList.remove(cls); };
+    var xplan = [
+      [0, function () {
+        each(xp.querySelectorAll(".xp-m"), function (el) { el.classList.remove("show"); });
+        each(xp.querySelectorAll(".xp-k"), function (el) { el.classList.remove("hit"); });
+        ["gone", "toast", "sending", "tapdoc"].forEach(off);
+        xs("chat");
+      }],
+      [1500, function () { on("toast"); }],
+      [2300, function () { on("gone"); }],
+      [3900, function () { off("toast"); xs("bot"); }],
+      [4300, function () { xq("menu").classList.add("show"); }],
+      [5500, function () { xq("k1").classList.add("hit"); }],
+      [5900, function () { xq("list").classList.add("show"); }],
+      [7200, function () { xq("k2").classList.add("hit"); on("sending"); }],
+      [8200, function () { off("sending"); xq("doc").classList.add("show"); }],
+      [9900, function () { on("tapdoc"); }],
+      [10500, function () { xs("file"); }],
+    ];
+    var XLOOP = 16500, xtimers = [], xrunning = false;
+    var xrun = function () {
+      xtimers.forEach(clearTimeout);
+      xtimers = xplan.map(function (p) { return setTimeout(p[1], p[0]); });
+      xtimers.push(setTimeout(xrun, XLOOP));
+    };
+    var xstop = function () { xtimers.forEach(clearTimeout); xtimers = []; };
+    if (hasIO) {
+      new IntersectionObserver(function (en) {
+        if (en[0].isIntersecting && !xrunning) { xrunning = true; xrun(); }
+        else if (!en[0].isIntersecting && xrunning) { xrunning = false; xstop(); }
+      }, { threshold: 0.5 }).observe(xp);
+    } else { xrun(); }
+  }
+
   // 3. The hero phone: Алина writes and deletes → the notice → her voice note gets a transcript →
   //    she edits a message → the notice with «Было» and «Стало». Then again.
-  var phone = document.querySelector(".phone.tg");
+  var phone = document.querySelector(".phone.tg:not(.xp)");
   if (!phone || reduce) return;
   phone.classList.add("story");
   var q = function (name) { return phone.querySelector('[data-s="' + name + '"]'); };

@@ -35,7 +35,9 @@ DOCS_URL = "https://telegra.ph/Politika-konfidencialnosti--EHho-09-20"
 UMAMI_ID = "dd294d60-2943-4dc7-b218-6d5c803ca0c1"
 UMAMI_SRC = "https://cloud.umami.is/script.js"
 DEFAULT_LANG = "ru"
-# code, label in the switcher, ready (published). Not ready = shown greyed with "скоро".
+# code, label in the switcher, ready (published). Languages that are not ready are not shown at all
+# (owner, 14.10.2026: nothing about other countries until their version is made); with one ready
+# language there is no switcher.
 LANGS = [
     ("ru", "RU", True),
     ("en", "EN", False),
@@ -61,8 +63,6 @@ def lang_switch(current: str, prefix: str) -> str:
             items.append(f'<span class="lang on" aria-current="true">{esc(label)}</span>')
         elif ready:
             items.append(f'<a class="lang" href="{prefix}{code}/" hreflang="{code}">{esc(label)}</a>')
-        else:
-            items.append(f'<span class="lang off" title="soon">{esc(label)}</span>')
     return "".join(items)
 
 
@@ -111,11 +111,13 @@ def head(t: dict, *, path: str, prefix: str, og: str) -> str:
 
 def header(t: dict, prefix: str, lang: str) -> str:
     nav = "".join(f'<a href="#{a}">{esc(label)}</a>' for a, label in t["nav"])
+    langs = (f'<nav class="langs" aria-label="{esc(t['lang_label'])}">{lang_switch(lang, prefix)}</nav>'
+             if len(ready_langs()) > 1 else "")
     return f"""<header class="top">
   <div class="wrap top-in">
     <a class="logo" href="./"><img src="{prefix}assets/logo-64.png" width="32" height="32" alt=""><span>{esc(t['brand'])}</span></a>
     <nav class="menu">{nav}</nav>
-    <nav class="langs" aria-label="{esc(t['lang_label'])}">{lang_switch(lang, prefix)}</nav>
+    {langs}
     {bot_link("btn btn-sm", esc(t['open_bot']), "header")}
   </div>
 </header>"""
@@ -159,7 +161,7 @@ def phone(t: dict, prefix: str) -> str:
     g = t["tg"]
     logo = f'<img src="{prefix}assets/logo-64.png" width="40" height="40" alt="">'
     sign = f'<i class="tg-sign">🐦‍🔥 {esc(g["echo"])} · <span>@EchoSave_bot</span></i>'
-    when = f'🕒 {esc(g["sent"])} {esc(g["date"])} {{time}} ({esc(g["tz"])})'
+    when = f'🕒 {esc(g["sent"])} {esc(g["date"])} {{time}} {esc(g["tz"])}'
 
     def bubble(side: str, text: str, time: str, attrs: str = "") -> str:
         ticks = CHECKS if side == "out" else ""
@@ -204,6 +206,76 @@ def phone(t: dict, prefix: str) -> str:
         <div class="tg-input">{attach}<span class="field">{esc(g['input'])}</span>{mic}</div>
       </div>
     </div>"""
+
+
+def export_demo(t: dict, prefix: str) -> str:
+    """«📜 Переписка» (14.10.2026): Алина deletes the whole chat → in the bot Меню → «📜 Переписка» → her chat →
+    the file → the file opened, drawn like bot/chat_page.py. site.js plays it; without JavaScript (or with
+    reduced motion) the phone shows the opened file. Fictional people only."""
+    x, g = t["xp"], t["tg"]
+    logo = f'<img src="{prefix}assets/logo-64.png" width="40" height="40" alt="">'
+    sign = f'<i class="tg-sign">🐦‍🔥 {esc(g["echo"])} · <span>@EchoSave_bot</span></i>'
+
+    def bubble(side, text, time, edited="", gone="", cls=""):
+        ticks = CHECKS if side == "out" else ""
+        word = f"{esc(edited)} " if edited else ""
+        return (f'<div class="tg-b {side}{cls}"><span class="tx">{esc(text)}</span>'
+                f'<span class="tm">{word}{esc(time)}{ticks}</span></div>')
+
+    history = "".join(bubble(s_, tx, tm, e) for s_, tx, tm, e, _g in x["chat"])
+    rows = "".join(
+        f'<div class="xp-row {s_}">{bubble(s_, tx, tm, e, cls="")}'
+        + (f'<div class="xp-gone">{esc(gn)}</div>' if gn else "") + "</div>"
+        for s_, tx, tm, e, gn in x["chat"])
+    first = x["menu_buttons"][0][0]
+    hit1, hit2 = ' data-x="k1"', ' data-x="k2"'
+    keys = "".join(
+        '<div class="xp-krow">' + "".join(
+            f'<span class="xp-k"{hit1 if label == first else ""}>{esc(label)}</span>' for label in row)
+        + "</div>" for row in x["menu_buttons"])
+    lst = "".join(
+        f'<div class="xp-krow"><span class="xp-k"{hit2 if i == 0 else ""}>{esc(label)}</span></div>'
+        for i, label in enumerate(x["list_buttons"]))
+    caption = "<br>".join(f"<b>{esc(c)}</b>" if i == 0 else esc(c) for i, c in enumerate(x["caption"]))
+    status = (f'<div class="tg-status"><b>{esc(x["time"])}</b><span>{SIGNAL}<small>5G</small>'
+              f'<span class="batt">69</span></span></div>')
+    attach = '<span class="tg-round">📎</span>'
+    mic = '<span class="tg-round">🎙</span>'
+    steps = "".join(f"<li>{esc(st)}</li>" for st in x["steps"])
+    return f"""<section class="sec" id="perepiska">
+  <div class="wrap xp-in">
+    <div class="xp-text reveal">
+      <h2>{esc(x['title'])}</h2>
+      <p class="lead">{esc(x['lead'])}</p>
+      <ol class="xp-steps">{steps}</ol>
+      <p class="muted">{esc(x['note'])}</p>
+    </div>
+    <div class="phone tg xp" aria-hidden="true">
+      {status}
+      <div class="tg-screen xs-chat">
+        <div class="tg-head"><span class="pill back">‹ <em>3</em></span><span class="pill title"><b>{esc(g['name'])}</b><small>{esc(g['status'])}</small></span><span class="ava">{esc(g['name'][0])}</span></div>
+        <div class="tg-body"><span class="tg-date">{esc(g['today'])}</span><div class="xp-hist">{history}</div><span class="xp-empty">{esc(x['empty'])}</span></div>
+        <div class="xp-toast">{esc(x['toast'])}</div>
+        <div class="tg-input">{attach}<span class="field">{esc(g['input'])}</span>{mic}</div>
+      </div>
+      <div class="tg-screen xs-bot">
+        <div class="tg-head"><span class="pill back">‹ <em>3</em></span><span class="pill title"><b>{esc(g['bot'])}</b><small>{esc(g['bot_status'])}</small></span>{logo}</div>
+        <div class="tg-body">
+          <div class="xp-m" data-x="menu"><div class="tg-b in note"><b>{esc(x['menu_title'])}</b><br>{esc(x['menu_state'])}</div><div class="xp-kb">{keys}</div></div>
+          <div class="xp-m" data-x="list"><div class="tg-b in note"><b>{esc(x['list_title'])}</b><br><br>{esc(x['list_text'])}</div><div class="xp-kb">{lst}</div></div>
+          <div class="xp-m" data-x="doc"><div class="tg-b in note xp-doc"><div class="xp-file"><span class="xp-fi">📄</span><span><b>{esc(x['file_name'])}</b><small>{esc(x['file_size'])}</small></span></div>{caption}<br>{sign}<span class="tm">{esc(x['time'])}</span></div></div>
+        </div>
+        <div class="xp-sending">{esc(x['sending'])}</div>
+        <div class="tg-input"><span class="menu-btn">≡ {esc(g['menu'])}</span>{attach}<span class="field">{esc(g['input'])}</span>{mic}</div>
+      </div>
+      <div class="tg-screen xs-file">
+        <div class="xp-head"><div><b>{esc(g['name'])}</b><span>{esc(x['login'])}</span></div><span class="ava">{esc(g['name'][0])}</span></div>
+        <div class="xp-page"><div class="xp-info">{x['info']}</div><div class="xp-day">{esc(x['day'])}</div>{rows}</div>
+        <div class="xp-sign">{sign}</div>
+      </div>
+    </div>
+  </div>
+</section>"""
 
 
 # Where to "tap" on each connection screenshot (share of width, share of height) — the orange frames.
@@ -257,7 +329,9 @@ def page(t: dict) -> str:
     facts = "".join(f'<div class="fact"><b>{esc(a)}</b><span>{esc(b)}</span></div>' for a, b in t["facts"])
     features = "".join(
         f'<article class="card reveal"><div class="ico">{f["icon"]}</div><h3>{esc(f["title"])}</h3>'
-        f'<p>{esc(f["text"])}</p></article>' for f in t["features"])
+        f'<p>{esc(f["text"])}</p>'
+        + (f'<p class="more"><a href="#perepiska">{esc(f["more"])}</a></p>' if f.get("more") else "")
+        + "</article>" for f in t["features"])
     privacy = "".join(
         f'<div class="pv reveal"><div class="ico">{p["icon"]}</div><div><b>{esc(p["title"])}</b>'
         f'<p>{esc(p["text"])}</p></div></div>' for p in t["privacy"])
@@ -294,9 +368,11 @@ def page(t: dict) -> str:
 <section class="sec" id="features">
   <div class="wrap">
     <h2 class="reveal">{esc(t['features_title'])}</h2>
-    <div class="grid3">{features}</div>
+    <div class="grid4">{features}</div>
   </div>
 </section>
+
+{export_demo(t, prefix)}
 
 {connect(t, prefix)}
 
@@ -332,18 +408,9 @@ def page(t: dict) -> str:
       {guide}
       <h3>{esc(t['guide_edit_title'])}</h3>
       <p>{esc(t['guide_edit'])}</p>
+      <h3>{esc(t['guide_chat_title'])}</h3>
+      <p>{esc(t['guide_chat'])}</p>
     </details>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="wrap">
-    <div class="world reveal">
-      <h2>{esc(t['world_title'])}</h2>
-      <p>{esc(t['world_text'])}</p>
-      <p class="muted" lang="en">{esc(t['world_en'])}</p>
-      <p class="muted" lang="hi">{esc(t['world_hi'])}</p>
-    </div>
   </div>
 </section>
 
