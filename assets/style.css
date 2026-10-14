@@ -457,3 +457,16 @@ a.lang:hover { color: var(--accent); }
   .xp-in { grid-template-columns: 1fr; gap: 28px; }
   .phone.xp { height: 640px; }
 }
+
+/* «📜 Переписка»: its own framed block (owner, 14.10.2026: «непонятно, что это отдельный топик») */
+.xp-box { position: relative; overflow: hidden; padding: 40px; border-radius: 32px; border: 2px solid transparent;
+  background: linear-gradient(var(--card), var(--card)) padding-box, var(--grad) border-box; box-shadow: var(--shadow); }
+.xp-box::before { content: ""; position: absolute; left: -140px; bottom: -180px; width: 420px; height: 420px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(140, 111, 255, .14), rgba(81, 190, 255, 0) 70%); pointer-events: none; }
+.xp-box > * { position: relative; }
+.xp-badge { display: inline-block; margin-bottom: 14px; padding: 6px 14px; border-radius: 999px; background: var(--grad);
+  color: #fff; font-size: 14px; font-weight: 700; letter-spacing: .02em; }
+.xp.gone .tg-date { opacity: 0; transition: opacity .4s; }
+@media (max-width: 860px) {
+  .xp-box { padding: 26px 16px 20px; border-radius: 26px; }
+}

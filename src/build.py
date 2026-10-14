@@ -243,8 +243,10 @@ def export_demo(t: dict, prefix: str) -> str:
     mic = '<span class="tg-round">🎙</span>'
     steps = "".join(f"<li>{esc(st)}</li>" for st in x["steps"])
     return f"""<section class="sec" id="perepiska">
-  <div class="wrap xp-in">
+  <div class="wrap">
+  <div class="xp-box xp-in">
     <div class="xp-text reveal">
+      <span class="xp-badge">📜 {esc(x['badge'])}</span>
       <h2>{esc(x['title'])}</h2>
       <p class="lead">{esc(x['lead'])}</p>
       <ol class="xp-steps">{steps}</ol>
@@ -274,6 +276,7 @@ def export_demo(t: dict, prefix: str) -> str:
         <div class="xp-sign">{sign}</div>
       </div>
     </div>
+  </div>
   </div>
 </section>"""
 
